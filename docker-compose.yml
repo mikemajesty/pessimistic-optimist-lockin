@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: db-transaction-postgres
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-transaction-postgres:/data/postgres
+      - ./create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+    restart: always
+    networks:
+      - postgres-network
+  pgadmin:
+    container_name: db-transaction-pgadmin
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
+
+volumes:
+  db-transaction-postgres:
+networks:
+  postgres-network:
+    driver: bridge
